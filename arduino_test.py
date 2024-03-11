@@ -65,18 +65,20 @@ def run_arduino_cli(args: list[str]):
         
     try :
         return subprocess.run(cmd, text=True, shell=True, check=True, capture_output=True)
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
         print("Error running command: " + cmd)
+        print("Error code:\n" + e.stderr)
         
-# compile, upload, and verify the sketch at the given path
-def compile_upload_verify(port: str, fqbn: str, sketch_path: str):
+# compile, upload, and verify the sketch at the given path (path should be the .ino file)
+def compile_upload_verify(port: str, fqbn: str, sketch_path: str, usbstack='arduino'):
     # verify the path is valid
     if not os.path.exists(sketch_path):
         print("Invalid path")
-        exit(1)
+        # exit(1)
+        
     
     # shaboom
-    result = run_arduino_cli(['compile', '-p', port, '-b', fqbn, sketch_path, '-u', '-t', '--clean'])
+    result = run_arduino_cli(['compile', '-p', port, '-b', fqbn + ':usbstack=' + usbstack, sketch_path, '-u', '-t', '--clean'])
     
     return result
 
@@ -184,6 +186,8 @@ def get_board_data():
             break
         
     return (port, FQBN, core)
+
+    
     
 
 if __name__ == '__main__':
@@ -199,12 +203,12 @@ if __name__ == '__main__':
     print("Core: " + core)
     print('---------------------------------')
 
-    compile_upload_verify(port, FQBN, os.path.join("C:\\Users\SEVAK\\Documents\\Arduino\\generated_examples\\Blink\\Blink.ino"))
+    compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
     
     while True:
         # get input and split by space into list
         args = input("Enter command: ").split(' ')
-        print(run_arduino_cli(args).stdout)
+        print(run_arduino_cli(args))
     
     
     
