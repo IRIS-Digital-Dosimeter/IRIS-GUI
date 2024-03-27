@@ -2,8 +2,6 @@ import re
 import subprocess
 import os
 import requests
-import ctypes
-import sys
 from zipfile import ZipFile
 
 
@@ -190,25 +188,25 @@ def get_board_data():
     
     
 
-if __name__ == '__main__':
-    # install the arduino-cli, board reqs, and lib reqs if not installed
-    # install_arduino_cli()
-    # install_M0_reqs()
-    # install_default_libs()
+# if __name__ == '__main__':
+#     # install the arduino-cli, board reqs, and lib reqs if not installed
+#     # install_arduino_cli()
+#     # install_M0_reqs()
+#     # install_default_libs()
     
-    port, FQBN, core = get_board_data()
+#     port, FQBN, core = get_board_data()
     
-    print("Port: " + port)
-    print("FQBN: " + FQBN)
-    print("Core: " + core)
-    print('---------------------------------')
+#     print("Port: " + port)
+#     print("FQBN: " + FQBN)
+#     print("Core: " + core)
+#     print('---------------------------------')
 
-    compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
+#     compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
     
-    while True:
-        # get input and split by space into list
-        args = input("Enter command: ").split(' ')
-        print(run_arduino_cli(args))
+#     while True:
+#         # get input and split by space into list
+#         args = input("Enter command: ").split(' ')
+#         print(run_arduino_cli(args))
     
     
     
