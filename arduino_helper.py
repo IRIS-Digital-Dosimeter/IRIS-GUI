@@ -44,6 +44,13 @@ def install_arduino_cli():
             os.remove(os.path.join(cli_path, "LICENSE.txt"))
         elif os.name == 'posix':
             print("Downloading Mac/Linux arduino-cli...")
+
+            try:
+                os.mkdir(os.path.join('.', 'arduino-cli'))
+                os.mkdir(os.path.join('.', 'arduino-cli', 'mac_linux'))
+            except:
+                print('already installed!')
+                return
             
             posixcmd = 'curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=./arduino-cli/mac_linux sh'
             
@@ -57,6 +64,8 @@ def install_arduino_cli():
 # run the arduino-cli with the given arguments
 def run_arduino_cli(args: list[str]):
     cmd = exe_path + ' '
+
+    cmd += '--additional-urls https://adafruit.github.io/arduino-board-index/package_adafruit_index.json '
     
     for arg in args:
         cmd += arg + ' '
@@ -188,25 +197,26 @@ def get_board_data():
     
     
 
-# if __name__ == '__main__':
-#     # install the arduino-cli, board reqs, and lib reqs if not installed
-#     # install_arduino_cli()
-#     # install_M0_reqs()
-#     # install_default_libs()
+if __name__ == '__main__':
+    # install the arduino-cli, board reqs, and lib reqs if not installed
+    install_arduino_cli()
+    install_M0_reqs()
+    install_default_libs()
     
-#     port, FQBN, core = get_board_data()
+    port, FQBN, core = get_board_data()
     
-#     print("Port: " + port)
-#     print("FQBN: " + FQBN)
-#     print("Core: " + core)
-#     print('---------------------------------')
+    print("Port: " + port)
+    print("FQBN: " + FQBN)
+    print("Core: " + core)
+    print('---------------------------------')
 
-#     compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
+    # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
+    # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
     
-#     while True:
-#         # get input and split by space into list
-#         args = input("Enter command: ").split(' ')
-#         print(run_arduino_cli(args))
+    while True:
+        # get input and split by space into list
+        args = input("Enter command: ").split(' ')
+        print(run_arduino_cli(args))
     
     
     
