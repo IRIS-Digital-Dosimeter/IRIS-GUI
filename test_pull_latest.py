@@ -1,6 +1,7 @@
 import arduino_helper as ah
 import requests
 import os
+from datetime import datetime
 
 
 # downloads the contents of a specific folder from a github repo
@@ -23,12 +24,28 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
     if 'message' in file_data :
         raise Exception('GitHub path or branch may be invalid.')
     
+    # create a folder name based on the current date and time as a default value
+    folder_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    
     # create the save directory if it doesn't exist
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)    
+        
+        
+    # loop through each file to create the proper folder name
+    for file in file_data:
+        # get the file name
+        file_name = file['name']
+        
+        # if `file` is the .ino, create a folder name (same as file_name without the extension)
+        splitted = file_name.split('.')
+        if splitted[1] == 'ino':
+            folder_name = splitted[0]
+        
+    if not os.path.exists(os.path.join(save_dir, folder_name)):
+        os.makedirs(os.path.join(save_dir, folder_name))
 
-    
-    # loop through each file in the folder
+    # loop through each file in the folder, this time to save
     for file in file_data:
         # get the download URL and name for the file
         file_url = file['download_url']
@@ -37,15 +54,15 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
         # send GET request to download the file
         r = requests.get(file_url)
         
-        # if `file` is the .ino, create a folder name (same as file_name without the extension)
-        splitted = file_name.split('.')
-        if splitted[1] == 'ino':
+        # # if `file` is the .ino, create a folder name (same as file_name without the extension)
+        # splitted = file_name.split('.')
+        # if splitted[1] == 'ino':
             
-            folder_name = splitted[0]
+        #     folder_name = splitted[0]
             
-            # create the folder if it doesn't exist
-            if not os.path.exists(os.path.join(save_dir, folder_name)):
-                os.makedirs(os.path.join(save_dir, folder_name))
+        #     # create the folder if it doesn't exist
+        #     if not os.path.exists(os.path.join(save_dir, folder_name)):
+        #         os.makedirs(os.path.join(save_dir, folder_name))
             
         # open each file in write-binary mode and save it to the local directory
         with open(os.path.join(save_dir, folder_name, file_name), 'wb') as f:
@@ -55,9 +72,9 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
 
 repo_user = 'IRIS-Digital-Dosimeter'
 repo_name = 'IRIS-Project'
-branch_name = 'sandbox_DMA'
-gitpath = 'sandbox/M0/mass storage andrew/msc_sdfat'
-saveto = './test/'
+branch_name = 'binary_sdFat'
+gitpath = 'sandbox/M0/SdFat/datalogger_tAv_bin'
+saveto = '../test/'
 
 saved_path = download_github_folder_contents(repo_user, repo_name, branch_name, gitpath, saveto)
 
