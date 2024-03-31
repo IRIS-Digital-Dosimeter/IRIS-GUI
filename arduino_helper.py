@@ -29,6 +29,13 @@ def install_arduino_cli():
         if os.name == 'nt':
             print("Downloading Windows arduino-cli...")
             
+            try:
+                os.mkdirs(os.path.join('.', 'arduino-cli'))
+                os.mkdirs(os.path.join('.', 'arduino-cli', 'windows'))
+            except:
+                print('folder exists!')
+                return
+            
             url = "https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Windows_64bit.zip"
             
             r = requests.get(url)
@@ -46,10 +53,10 @@ def install_arduino_cli():
             print("Downloading Mac/Linux arduino-cli...")
 
             try:
-                os.mkdir(os.path.join('.', 'arduino-cli'))
-                os.mkdir(os.path.join('.', 'arduino-cli', 'mac_linux'))
+                os.mkdirs(os.path.join('.', 'arduino-cli'))
+                os.mkdirs(os.path.join('.', 'arduino-cli', 'mac_linux'))
             except:
-                print('already installed!')
+                print('folder exists!')
                 return
             
             posixcmd = 'curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=./arduino-cli/mac_linux sh'
@@ -134,7 +141,8 @@ def install_default_libs():
 
     return out
 
-# returns a tuple of the port, FQBN, and core of the first connected board
+# returns a list of tuples of the port, FQBN, and core of all connected boards
+# data may be imperfect so must be checked
 def get_board_data():
     # check if a string is a valid looking FQBN
     def is_fqbn_valid(fqbn: str):
@@ -167,43 +175,56 @@ def get_board_data():
     if len(entries) < 2:
         return None
     
-    # just get the first entry
     # entries[0] is the header/labels
-    entry = entries[1]
+    entries = entries[1:]
+    grabbed_data = []
     
-    port, FQBN, core = None, None, None
+    for entry in entries:
     
-    # split the entry by spaces (gets messy)
-    entry = entry.split(' ')
-    
-    # find the port (its the first entry lol)
-    # looks like "COM3" or "/dev/ttyACM0"
-    port = entry[0]
-    
-    # find the FQBN (it should look like "xxx:yyy:zzz")
-    for j in entry:
-        if is_fqbn_valid(j) is not None:
-            FQBN = j
-            break
+        port, FQBN, core = None, None, None
         
-    # find the core (it should look like "xxx:yyy")
-    for j in entry:
-        if is_core_valid(j) is not None:
-            core = j
-            break
+        # split the entry by spaces (gets messy)
+        entry = entry.split(' ')
         
-    return (port, FQBN, core)
+        # find the port (its the first entry lol)
+        # looks like "COM3" or "/dev/ttyACM0"
+        port = entry[0]
+        
+        # find the FQBN (it should look like "xxx:yyy:zzz")
+        for j in entry:
+            if is_fqbn_valid(j) is not None:
+                FQBN = j
+                break
+            
+        # find the core (it should look like "xxx:yyy")
+        for j in entry:
+            if is_core_valid(j) is not None:
+                core = j
+                break
+            
+        grabbed_data.append((port, FQBN, core))
 
+    return grabbed_data
     
     
 
 if __name__ == '__main__':
     # install the arduino-cli, board reqs, and lib reqs if not installed
     install_arduino_cli()
+    print('CLI installed')
     install_M0_reqs()
+    print('M0 reqs installed')
     install_default_libs()
+    print('Default libs installed')
     
-    port, FQBN, core = get_board_data()
+    boards = get_board_data()
+    print('found boards:')
+    for n, board in enumerate(boards):
+        print(f'{n}.', board)
+
+    # pick the right board manually :(
+    board_num = int(input('Enter the number of the board to use: '))
+    port, FQBN, core = boards[board_num]
     
     print("Port: " + port)
     print("FQBN: " + FQBN)
@@ -212,11 +233,12 @@ if __name__ == '__main__':
 
     # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
     # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
+    compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
     
     while True:
         # get input and split by space into list
         args = input("Enter command: ").split(' ')
-        print(run_arduino_cli(args))
+        print(run_arduino_cli(args).stdout)
     
     
     
