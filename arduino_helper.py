@@ -130,6 +130,9 @@ def install_default_libs():
     # install the Adafruit SPIFlash library
     out.append(run_arduino_cli(['lib', 'install', '"Adafruit SPIFlash"']))
     
+    # install the Adafruit SdFat library
+    out.append(run_arduino_cli(['lib', 'install', '"SdFat - Adafruit Fork"']))
+    
     # install the Adafruit TinyUSB library
     out.append(run_arduino_cli(['lib', 'install', '"Adafruit TinyUSB Library"']))
     
