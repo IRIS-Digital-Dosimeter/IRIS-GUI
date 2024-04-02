@@ -29,7 +29,9 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
     
     # create the save directory if it doesn't exist
     if not os.path.exists(save_dir):
-        os.makedirs(save_dir)    
+        os.makedirs(save_dir)
+    else: 
+        print(f'The dir {save_dir} exists')    
         
         
     # loop through each file to create the proper folder name
@@ -40,10 +42,14 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
         # if `file` is the .ino, create a folder name (same as file_name without the extension)
         splitted = file_name.split('.')
         if splitted[1] == 'ino':
-            folder_name = splitted[0]
+            # - issue there are typically two files with .ino 
+            if 'helper' not in splitted[0].lower():
+                folder_name = splitted[0]
         
     if not os.path.exists(os.path.join(save_dir, folder_name)):
         os.makedirs(os.path.join(save_dir, folder_name))
+    else: 
+        print(f'The dir {os.makedirs(os.path.join(save_dir, folder_name))} exists')    
 
     # loop through each file in the folder, this time to save
     for file in file_data:
@@ -54,7 +60,7 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
         # send GET request to download the file
         r = requests.get(file_url)
         
-        # # if `file` is the .ino, create a folder name (same as file_name without the extension)
+        # if `file` is the .ino, create a folder name (same as file_name without the extension)
         # splitted = file_name.split('.')
         # if splitted[1] == 'ino':
             
@@ -73,8 +79,9 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
 repo_user = 'IRIS-Digital-Dosimeter'
 repo_name = 'IRIS-Project'
 branch_name = 'binary_sdFat'
-gitpath = 'sandbox/M0/SdFat/datalogger_tAv_bin'
-saveto = '../test/'
+gitpath = 'sandbox/M0/SdFat/msc_sdfat'
+saveto = '.'
+# saveto = '../test/' # - This does not create a folder in the same repo
 
 saved_path = download_github_folder_contents(repo_user, repo_name, branch_name, gitpath, saveto)
 
@@ -88,5 +95,6 @@ for n, board in enumerate(boards):
 # pick the right board manually :(
 board_num = int(input('Enter the number of the board to use: '))
 port, FQBN, core = boards[board_num]
+print(boards[board_num])
 
-ah.compile_upload_verify(port, FQBN, saved_path, usbstack='tinyusb')
+# ah.compile_upload_verify(port, FQBN, saved_path, usbstack='tinyusb')
