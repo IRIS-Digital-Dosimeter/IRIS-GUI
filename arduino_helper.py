@@ -54,8 +54,8 @@ def install_arduino_cli():
             print("Downloading Mac/Linux arduino-cli...")
 
             try:
-                os.mkdirs(os.path.join('.', 'arduino-cli'))
-                os.mkdirs(os.path.join('.', 'arduino-cli', 'mac_linux'))
+                os.mkdir(os.path.join('.', 'arduino-cli'))
+                os.mkdir(os.path.join('.', 'arduino-cli', 'mac_linux'))
             except:
                 print('folder exists!')
                 return
