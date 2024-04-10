@@ -30,11 +30,12 @@ def install_arduino_cli():
             print("Downloading Windows arduino-cli...")
             
             try:
-                os.mkdirs(os.path.join('.', 'arduino-cli'))
-                os.mkdirs(os.path.join('.', 'arduino-cli', 'windows'))
+                os.mkdir(os.path.join('.', 'arduino-cli'))
+                os.mkdir(os.path.join('.', 'arduino-cli', 'windows'))
             except:
                 print('folder exists!')
-                return
+                raise
+                exit(1)
             
             url = "https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Windows_64bit.zip"
             
@@ -236,7 +237,7 @@ if __name__ == '__main__':
 
     # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
     # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
-    compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
+    # compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
     
     while True:
         # get input and split by space into list

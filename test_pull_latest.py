@@ -49,7 +49,7 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
     if not os.path.exists(os.path.join(save_dir, folder_name)):
         os.makedirs(os.path.join(save_dir, folder_name))
     else: 
-        print(f'The dir {os.makedirs(os.path.join(save_dir, folder_name))} exists')    
+        print(f'The dir {os.path.join(save_dir, folder_name)} exists')    
 
     # loop through each file in the folder, this time to save
     for file in file_data:
@@ -60,30 +60,17 @@ def download_github_folder_contents(repo_user, repo_name, branch_name, folder_pa
         # send GET request to download the file
         r = requests.get(file_url)
         
-        # if `file` is the .ino, create a folder name (same as file_name without the extension)
-        # splitted = file_name.split('.')
-        # if splitted[1] == 'ino':
-            
-        #     folder_name = splitted[0]
-            
-        #     # create the folder if it doesn't exist
-        #     if not os.path.exists(os.path.join(save_dir, folder_name)):
-        #         os.makedirs(os.path.join(save_dir, folder_name))
-            
         # open each file in write-binary mode and save it to the local directory
         with open(os.path.join(save_dir, folder_name, file_name), 'wb') as f:
             f.write(r.content)
             
     return os.path.join(save_dir, folder_name)
 
-repo_user = 'IRIS-Digital-Dosimeter'
-repo_name = 'IRIS-Project'
-branch_name = 'binary_sdFat'
-gitpath = 'sandbox/M0/SdFat/msc_sdfat'
-saveto = '.'
-# saveto = '../test/' # - This does not create a folder in the same repo
 
-saved_path = download_github_folder_contents(repo_user, repo_name, branch_name, gitpath, saveto)
+
+
+
+
 
 
 # get the board data and list it
@@ -97,4 +84,38 @@ board_num = int(input('Enter the number of the board to use: '))
 port, FQBN, core = boards[board_num]
 print(boards[board_num])
 
-# ah.compile_upload_verify(port, FQBN, saved_path, usbstack='tinyusb')
+# upload the sketch to the board
+repo_user = 'IRIS-Digital-Dosimeter'
+repo_name = 'IRIS-Project'
+saveto = './test/'
+
+branch_name = 'binary_sdFat'
+gitpath = 'sandbox/M0/SdFat/datalogger_tAv_bin'
+# download the contents of the datalogger and get the path it was saved to
+# datalogger_path = download_github_folder_contents(repo_user, repo_name, branch_name, gitpath, saveto)
+datalogger_path = os.path.join('.', 'test', 'datalogger_tAv_bin_DEMO')
+
+branch_name = 'sandbox_DMA'
+gitpath = 'sandbox/M0/mass storage andrew/msc_sdfat'
+# download the contents of the SD exposer and get the path it was saved to
+SD_path = download_github_folder_contents(repo_user, repo_name, branch_name, gitpath, saveto)
+
+print(f'Uploading sketch "{datalogger_path}" to {port} using {FQBN}')
+ah.compile_upload_verify(port, FQBN, datalogger_path, usbstack='tinyusb')
+
+input("Press Enter once the datalogger is done creating files!")
+
+
+boards = ah.get_board_data()
+print('found boards:')
+for n, board in enumerate(boards):
+    print(f'{n}.', board)
+
+# pick the right board manually :(
+board_num = int(input('Enter the number of the board to use: '))
+port, FQBN, core = boards[board_num]
+print(boards[board_num])
+
+
+print(f'Uploading sketch "{SD_path}" to {port} using {FQBN}')
+ah.compile_upload_verify(port, FQBN, SD_path, usbstack='tinyusb')
