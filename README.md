@@ -1,15 +1,18 @@
 # IRIS-GUI
-A Python GUI that allows easy updating and access to the IRIS boards.
+A Python CLI and GUI tool that allows easy updating, uploading, and access to the IRIS boards.
 
-Requirements:
-- Python 3.10+
-    - check by running `python --version` in terminal of choice
+## Requirements:
 
-- Pip
-    - check by running `pip --version`
+- **uv**
+    - https://docs.astral.sh/uv/
+    - A package and project manager
 
-- Tkinter
-    - check by running `python -m tkinter` in terminal of choice
+- **Python 3.12+**
+    - can install with `uv python install <version>`
+    - see [this page](https://docs.astral.sh/uv/guides/install-python/) for more help
+
+- **Tkinter**
+    - check by running `uv run -m tkinter` in terminal of choice
 
 
 In order to download required packages, please run the following in a terminal:
