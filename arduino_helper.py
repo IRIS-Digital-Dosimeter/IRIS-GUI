@@ -1,7 +1,9 @@
+import pyduinocli
 import re
 import subprocess
 import os
 import requests
+from pprint import pprint
 from zipfile import ZipFile
 
 
@@ -98,151 +100,177 @@ def compile_upload_verify(port: str, fqbn: str, sketch_path: str, usbstack='ardu
     return result
 
 # install necessary cores (idk what theyre actually called) for the M0 board
-def install_M0_reqs():
-    out = []
+# returns output of the command ig
+def install_cores(arduino: pyduinocli.commands.arduino.ArduinoCliCommand):
+    cores = [
+        'adafruit:samd',
+        'arduino:samd',
+    ]
+    return arduino.core.install(cores)
     
-    # install the Adafruit SAMD board library
-    out.append(run_arduino_cli(['core', 'install', 'adafruit:samd']))
+# def install_cores():
+#     out = []
     
-    # install the Adafruit AVR board library
-    out.append(run_arduino_cli(['core', 'install', 'adafruit:avr']))
+#     # install the Adafruit SAMD board library
+#     out.append(run_arduino_cli(['core', 'install', 'adafruit:samd']))
     
-    # install the Arduino SAMD board library
-    out.append(run_arduino_cli(['core', 'install', 'arduino:samd']))
+#     # install the Adafruit AVR board library
+#     out.append(run_arduino_cli(['core', 'install', 'adafruit:avr']))
+    
+#     # install the Arduino SAMD board library
+#     out.append(run_arduino_cli(['core', 'install', 'arduino:samd']))
 
-    # install the Arduino SAM board library
-    out.append(run_arduino_cli(['core', 'install', 'arduino:sam']))
+#     # install the Arduino SAM board library
+#     out.append(run_arduino_cli(['core', 'install', 'arduino:sam']))
     
-    # install the Arduino AVR board library
-    out.append(run_arduino_cli(['core', 'install', 'arduino:avr']))
+#     # install the Arduino AVR board library
+#     out.append(run_arduino_cli(['core', 'install', 'arduino:avr']))
 
-    return out
+#     return out
 
 # install libraries
-def install_default_libs():
-    out = []
+def install_default_libs(arduino: pyduinocli.commands.arduino.ArduinoCliCommand):
+    libs = [
+        'RTCZero',
+        'SdFat - Adafruit Fork',
+        'Adafruit TinyUSB Library',
+    ]
     
-    # install the RTCZero library
-    out.append(run_arduino_cli(['lib', 'install', 'RTCZero']))
+    return arduino.lib.install(libs)
+# def install_default_libs():
+#     out = []
+    
+#     # install the RTCZero library
+#     out.append(run_arduino_cli(['lib', 'install', 'RTCZero']))
 
-    # install the Adafruit NeoPixel library
-    out.append(run_arduino_cli(['lib', 'install', '"Adafruit NeoPixel"']))
+#     # install the Adafruit NeoPixel library
+#     out.append(run_arduino_cli(['lib', 'install', '"Adafruit NeoPixel"']))
     
-    # install the Adafruit SPIFlash library
-    out.append(run_arduino_cli(['lib', 'install', '"Adafruit SPIFlash"']))
+#     # install the Adafruit SPIFlash library
+#     out.append(run_arduino_cli(['lib', 'install', '"Adafruit SPIFlash"']))
     
-    # install the Adafruit SdFat library
-    out.append(run_arduino_cli(['lib', 'install', '"SdFat - Adafruit Fork"']))
+#     # install the Adafruit SdFat library
+#     out.append(run_arduino_cli(['lib', 'install', '"SdFat - Adafruit Fork"']))
     
-    # install the Adafruit TinyUSB library
-    out.append(run_arduino_cli(['lib', 'install', '"Adafruit TinyUSB Library"']))
+#     # install the Adafruit TinyUSB library
+#     out.append(run_arduino_cli(['lib', 'install', '"Adafruit TinyUSB Library"']))
     
-    # install the Adafruit ZeroDMA library
-    out.append(run_arduino_cli(['lib', 'install', '"Adafruit Zero DMA Library"']))
+#     # install the Adafruit ZeroDMA library
+#     out.append(run_arduino_cli(['lib', 'install', '"Adafruit Zero DMA Library"']))
     
-    # install the Adafruit LibPrintf library
-    out.append(run_arduino_cli(['lib', 'install', '"LibPrintf"']))
+#     # install the Adafruit LibPrintf library
+#     out.append(run_arduino_cli(['lib', 'install', '"LibPrintf"']))
 
-    return out
+#     return out
 
 # returns a list of tuples of the port, FQBN, and core of all connected boards
+def get_board_data(arduino: pyduinocli.commands.arduino.ArduinoCliCommand):
+    return arduino.board.list()
 # data may be imperfect so must be checked
-def get_board_data():
-    # check if a string is a valid looking FQBN
-    def is_fqbn_valid(fqbn: str):
-        # Define a regular expression pattern for the desired format
-        pattern = r'^[^\s:]+:[^\s:]+:[^\s:]+$'
+# def get_board_data():
+#     # check if a string is a valid looking FQBN
+#     def is_fqbn_valid(fqbn: str):
+#         # Define a regular expression pattern for the desired format
+#         pattern = r'^[^\s:]+:[^\s:]+:[^\s:]+$'
 
-        # Use re.match to check if the input string matches the pattern
-        match = re.match(pattern, fqbn)
+#         # Use re.match to check if the input string matches the pattern
+#         match = re.match(pattern, fqbn)
         
-        return None if match is None else match.group()
+#         return None if match is None else match.group()
         
-    # check if a string is a valid looking core
-    def is_core_valid(core: str):
-        # Define a regular expression pattern for the desired format
-        pattern = r'^[^\s:]+:[^\s:]+$'
+#     # check if a string is a valid looking core
+#     def is_core_valid(core: str):
+#         # Define a regular expression pattern for the desired format
+#         pattern = r'^[^\s:]+:[^\s:]+$'
 
-        # Use re.match to check if the input string matches the pattern
-        match = re.match(pattern, core)
+#         # Use re.match to check if the input string matches the pattern
+#         match = re.match(pattern, core)
         
-        return None if match is None else match.group()
+#         return None if match is None else match.group()
 
 
-    # get the list of connected boards
-    board_list_data = run_arduino_cli(['board', 'list'])
+#     # get the list of connected boards
+#     board_list_data = run_arduino_cli(['board', 'list'])
 
-    # split the output by newlines
-    entries = board_list_data.stdout.split('\n')
+#     # split the output by newlines
+#     entries = board_list_data.stdout.split('\n')
     
-    # make sure there's at least 1 connected board
-    if len(entries) < 2:
-        return None
+#     # make sure there's at least 1 connected board
+#     if len(entries) < 2:
+#         return None
     
-    # entries[0] is the header/labels
-    entries = entries[1:]
-    grabbed_data = []
+#     # entries[0] is the header/labels
+#     entries = entries[1:]
+#     grabbed_data = []
     
-    for entry in entries:
+#     for entry in entries:
     
-        port, FQBN, core = None, None, None
+#         port, FQBN, core = None, None, None
         
-        # split the entry by spaces (gets messy)
-        entry = entry.split(' ')
+#         # split the entry by spaces (gets messy)
+#         entry = entry.split(' ')
         
-        # find the port (its the first entry lol)
-        # looks like "COM3" or "/dev/ttyACM0"
-        port = entry[0]
+#         # find the port (its the first entry lol)
+#         # looks like "COM3" or "/dev/ttyACM0"
+#         port = entry[0]
         
-        # find the FQBN (it should look like "xxx:yyy:zzz")
-        for j in entry:
-            if is_fqbn_valid(j) is not None:
-                FQBN = j
-                break
+#         # find the FQBN (it should look like "xxx:yyy:zzz")
+#         for j in entry:
+#             if is_fqbn_valid(j) is not None:
+#                 FQBN = j
+#                 break
             
-        # find the core (it should look like "xxx:yyy")
-        for j in entry:
-            if is_core_valid(j) is not None:
-                core = j
-                break
+#         # find the core (it should look like "xxx:yyy")
+#         for j in entry:
+#             if is_core_valid(j) is not None:
+#                 core = j
+#                 break
             
-        grabbed_data.append((port, FQBN, core))
+#         grabbed_data.append((port, FQBN, core))
 
-    return grabbed_data
+#     return grabbed_data
     
     
 
 if __name__ == '__main__':
     # install the arduino-cli, board reqs, and lib reqs if not installed
-    install_arduino_cli()
-    print('CLI installed')
-    install_M0_reqs()
+    ardu = pyduinocli.Arduino(additional_urls=['https://adafruit.github.io/arduino-board-index/package_adafruit_index.json'])
+    # pprint(ardu.core.list())
+    out = install_cores(ardu)
+    pprint(out)
     print('M0 reqs installed')
-    install_default_libs()
+    
+    # pprint(ardu.lib.list())
+    out = install_default_libs(ardu)
+    pprint(out)
     print('Default libs installed')
     
-    boards = get_board_data()
+
+    boards = get_board_data(ardu)['result']['detected_ports'][0]['matching_boards']
     print('found boards:')
-    for n, board in enumerate(boards):
-        print(f'{n}.', board)
+    for n, board_dict in enumerate(boards):
+        print(f"{n}:")
+        for k, v in board_dict.items():
+            print(f"  {k}: {v}")
+        print()
 
-    # pick the right board manually :(
-    board_num = int(input('Enter the number of the board to use: '))
-    port, FQBN, core = boards[board_num]
+    # # pick the right board manually :(
+    # board_num = int(input('Enter the number of the board to use: '))
+    # port, FQBN, core = boards[board_num]
     
-    print("Port: " + port)
-    print("FQBN: " + FQBN)
-    print("Core: " + core)
-    print('---------------------------------')
+    # print("Port: " + port)
+    # print("FQBN: " + FQBN)
+    # print("Core: " + core)
+    # print('---------------------------------')
 
-    # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
-    # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
-    # compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
+    # # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
+    # # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
+    # # compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
     
-    while True:
-        # get input and split by space into list
-        args = input("Enter command: ").split(' ')
-        print(run_arduino_cli(args).stdout)
+    # while True:
+    #     # get input and split by space into list
+    #     args = input("Enter command: ").split(' ')
+    #     print(run_arduino_cli(args).stdout)
     
     
     
