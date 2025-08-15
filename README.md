@@ -15,16 +15,9 @@ A Python CLI and GUI tool that allows easy updating, uploading, and access to th
     - check by running `uv run -m tkinter` in terminal of choice
 
 
-In order to download required packages, please run the following in a terminal:
-`pip -R install ./requirements.txt`
+`uv` will download the necessary packages when you attempt to run any programs in the repo with `uv run [file]`.
 
-If you're using Linux and have issues using `pip` for Python packages, you may have to use your package manager to manually install them. The list of dependencies can be found in `./requirements.txt`.
+## To Do
 
-
-
-
-
-
-# To Do
 - [] Fix bug where uploading says "Invalid Path" for all paths
 - [] Find a better way to get board details
