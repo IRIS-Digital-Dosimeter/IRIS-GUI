@@ -47,11 +47,12 @@ class BoardStruct:
             f"Port: {self.port}\n"
             f"Serial Number: {self.serial_number}"
         )
-    
-class ExtendoArduino(Arduino):
+
+class ExtendoArduino(Arduino):              
     # install necessary cores (idk what theyre actually called) for the M0 board
     # returns output of the command ig
     def install_cores(self):
+        print("installing cores")
         cores = [
             'adafruit:samd',
             'arduino:samd',
@@ -60,6 +61,7 @@ class ExtendoArduino(Arduino):
     
     # install libraries
     def install_default_libs(self):
+        print("installing libs")
         libs = [
             'RTCZero',
             'SdFat - Adafruit Fork',
@@ -98,27 +100,6 @@ class ExtendoArduino(Arduino):
 
         return boards
 
-    
-        
-# def compile_upload_verify(port: str, fqbn: str, sketch_path: str, usbstack='arduino'):
-#     # verify the path is valid
-#     if not os.path.exists(sketch_path):
-#         print("Invalid path")
-#         # exit(1)
-        
-    
-#     # shaboom
-#     result = run_arduino_cli(['compile', '-p', port, '-b', fqbn + ':usbstack=' + usbstack, sketch_path, '-u', '-t', '--clean'])
-    
-#     return result
-
- 
-    
-
-if __name__ == '__main__':
-    pass
-    
-    
     
     
     

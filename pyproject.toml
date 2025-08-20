@@ -7,10 +7,10 @@ requires-python = ">=3.12"
 dependencies = [
     "crossfiledialog>=1.0.0",
     "pyduinocli",
-    "pywin32>=311 ; sys_platform == 'Windows'",
+    "pywin32>=311 ; platform_system == 'Windows'",
     "requests>=2.32.4",
 ]
 
 [tool.uv.sources]
-# pyduinocli = { path = "../pyduinocli", editable = true }
+#pyduinocli = { path = "../pyduinocli", editable = true }
 pyduinocli = { git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli" }
