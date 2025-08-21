@@ -6,9 +6,18 @@ from pathlib import Path
 from pprint import pprint
 
 def main():
+    
+    # print(f"main.py directory: {a_h.ExtendoArduino.LIB_DIR}")
+    # print(f"defaault cli tool dir: {a_h.ExtendoArduino.DEFAULT_CLI_TOOL_DIR}")
+    # print(f"cli yaml path:         {a_h.ExtendoArduino.CLI_YAML_PATH}")
+    # print(f"cli data path:         {a_h.ExtendoArduino.CLI_DATA_PATH}")
+    # print(f"cli user path:         {a_h.ExtendoArduino.CLI_USER_PATH}")
+    
     # install the arduino-cli, board reqs, and lib reqs if not installed
+    # also sets up the config file usage and assigns the proper working directories for the CLI tool
     ardu = a_h.ExtendoArduino(
         additional_urls=['https://adafruit.github.io/arduino-board-index/package_adafruit_index.json'],
+        timeout='600s'
     )
     
     out = ardu.install_cores()

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 
 [[package]]
@@ -84,7 +84,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "crossfiledialog", specifier = ">=1.0.0" },
-    { name = "pyduinocli", git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli" },
+    { name = "pyduinocli", specifier = ">=0.35.0" },
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=311" },
     { name = "requests", specifier = ">=2.32.4" },
 ]
@@ -92,7 +92,11 @@ requires-dist = [
 [[package]]
 name = "pyduinocli"
 version = "0.35.0"
-source = { git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli#bb6f7fad9fb2f3465f4bbd51bd70a8bf9a96c520" }
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/fc/b4927aacc5e396e8c8cb56a5047ea910e80dbbf1fddd83cf42b2db559d2c/pyduinocli-0.35.0.tar.gz", hash = "sha256:15172a03fdcf989972b0738dc9a536363d3d2ff6e1d8dd4c67595cbdc903ac31", size = 14155, upload-time = "2024-02-25T15:47:17.73Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/3d/5cd0bcbcda44b7f2f6bf031076ac6847056376b058e4d2f6e11b1bf07256/pyduinocli-0.35.0-py3-none-any.whl", hash = "sha256:97b3d98d6a015bd6b1fe9794d4f94d1ea30fd2b9954a9779d841d2fc44c28c0a", size = 24373, upload-time = "2024-02-25T15:47:16.32Z" },
+]
 
 [[package]]
 name = "pywin32"

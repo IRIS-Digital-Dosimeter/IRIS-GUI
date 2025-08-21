@@ -6,11 +6,11 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "crossfiledialog>=1.0.0",
-    "pyduinocli",
+    "pyduinocli>=0.35.0",
     "pywin32>=311 ; platform_system == 'Windows'",
     "requests>=2.32.4",
 ]
 
 [tool.uv.sources]
-#pyduinocli = { path = "../pyduinocli", editable = true }
-pyduinocli = { git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli" }
+# pyduinocli = { path = "../pyduinocli", editable = true }
+# pyduinocli = { git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli" }
