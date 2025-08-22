@@ -1,6 +1,83 @@
-def main():
-    print("Hello from iris-gui!")
+import pyduinocli
+import arduino_helper as a_h
+import ast
+import crossfiledialog
+from pathlib import Path
+from pprint import pprint
 
+def main():
+    
+    # print(f"main.py directory: {a_h.ExtendoArduino.LIB_DIR}")
+    # print(f"defaault cli tool dir: {a_h.ExtendoArduino.DEFAULT_CLI_TOOL_DIR}")
+    # print(f"cli yaml path:         {a_h.ExtendoArduino.CLI_YAML_PATH}")
+    # print(f"cli data path:         {a_h.ExtendoArduino.CLI_DATA_PATH}")
+    # print(f"cli user path:         {a_h.ExtendoArduino.CLI_USER_PATH}")
+    
+    # install the arduino-cli, board reqs, and lib reqs if not installed
+    # also sets up the config file usage and assigns the proper working directories for the CLI tool
+    ardu = a_h.ExtendoArduino(
+        additional_urls=['https://adafruit.github.io/arduino-board-index/package_adafruit_index.json'],
+        timeout='600s'
+    )
+    
+    out = ardu.install_cores()
+    print('M0 reqs installed')
+    
+    # install the default libraries
+    out = ardu.install_default_libs()
+    print('Default libs installed')
+    
+    # get the list of boards and print them
+    boards = ardu.get_board_data()
+    print('found boards:')
+    for n, board_deets in enumerate(boards):
+        print('---------------------------------')
+        print(f"{n}:")
+        print(board_deets)
+        print('---------------------------------')
+        print()
+
+    # pick the right board manually :
+    board_num = int(input('Enter the number of the board to use: '))
+    sel_board = boards[board_num]
+    # port, FQBN, core = boards[board_num]
+    
+    print("Selected Board:")
+    print('---------------------------------')
+    print(sel_board)
+    print('---------------------------------')
+    
+
+    # da_path = "/home/paelen/Documents/GitHub/IRIS-Project/packages/M0/Binary Serial Logger/serial_log/serial_log.ino"
+    # da_path = "C:\\Users\\Sevak\\Documents\\GitHub\\IRIS-Project\\packages\\M0\\Binary Serial Logger\\serial_log\\serial_log.ino"
+
+    da_path = Path(crossfiledialog.open_file(title="Select an Arduino sketch (.ino) file", filter="*.ino")).resolve()
+    # da_path = Path("C:\\Users\\Sevak\\Documents\\GitHub\\IRIS-Project\\packages\\M0\\Binary Serial Logger\\serial_log\\serial_log.ino").resolve()
+    
+
+    # # compile_upload_verify(port, FQBN, '"C:\\Users\\SEVAK\\Documents\\GitHub\\IRIS-Project\\sandbox\\M0\\mass storage andrew\\msc_sdfat\\msc_sdfat.ino"', usbstack='tinyusb')
+    # # compile_upload_verify(port, FQBN, '"/home/paelen/Documents/GitHub/IRIS-Project/sandbox/M0/SdFat/datalogger_tAv_bin/datalogger_tAv_bin.ino"', usbstack='tinyusb')
+    # # compile_upload_verify(port, FQBN, '"/home/paelen/paelen.ino"')
+    out = ardu.compile_upload_verify(
+        port=sel_board.port,
+        fqbn=sel_board.fqbn,
+        sketch_path=da_path.as_posix()
+    )
+    pprint(out)
+    # try:
+    #     out = ardu.compile_upload_verify(
+    #         port=sel_board.port,
+    #         fqbn=sel_board.fqbn,
+    #         sketch_path=da_path.as_posix()
+    #     )
+    #     pprint(out)
+    # except pyduinocli.errors.arduinoerror.ArduinoError as e:
+    #     print("Error during compilation/upload/verification:")
+    #     d = ast.literal_eval(str(e))
+    #     pprint(d['__stderr'])
+    #     return
+    
 
 if __name__ == "__main__":
     main()
+
