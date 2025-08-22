@@ -9,8 +9,14 @@ dependencies = [
     "pyduinocli>=0.35.0",
     "pywin32>=311 ; platform_system == 'Windows'",
     "requests>=2.32.4",
+    "textual>=5.3.0",
 ]
 
 [tool.uv.sources]
+
+[dependency-groups]
+dev = [
+    "textual-dev>=1.7.0",
+]
 # pyduinocli = { path = "../pyduinocli", editable = true }
 # pyduinocli = { git = "https://github.com/IRIS-Digital-Dosimeter/pyduinocli" }
