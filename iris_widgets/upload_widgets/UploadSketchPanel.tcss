@@ -1,0 +1,22 @@
+.status-label {
+    width: 1fr;
+    padding: 1;
+    # height: 3;
+    border: solid gray;
+}
+
+.status-invalid {
+    color: red;
+    text-style: bold;
+}
+
+.status-valid {
+    color: green;
+    text-style: bold;
+}
+
+#proceed_button {
+    margin-top: 1;
+    width: 20;
+    height: 3;
+}

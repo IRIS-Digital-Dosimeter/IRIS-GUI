@@ -1,0 +1,27 @@
+.fileselection-title {
+    content-align: center middle;
+    height: 3;
+    text-style: bold;
+    border: solid gray;
+}
+
+.file-label {
+    content-align: left middle;
+    height: 3;
+    width: 30%;
+    # text-style: bold;
+    border: solid gray;
+    margin-left: 2;
+}
+
+#selected-file-label {
+    padding: 1;
+    margin-left: 2;
+    content-align: center middle;   
+}
+
+#browse_button {
+    margin-left: 2;
+    width: 20;
+    height: 3;
+}

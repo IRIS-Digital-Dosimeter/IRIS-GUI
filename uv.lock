@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.12"
 
 [[package]]
@@ -256,6 +256,7 @@ dependencies = [
     { name = "pywin32", marker = "sys_platform == 'win32'" },
     { name = "requests" },
     { name = "textual" },
+    { name = "textual-fspicker" },
 ]
 
 [package.dev-dependencies]
@@ -270,6 +271,7 @@ requires-dist = [
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=311" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "textual", specifier = ">=5.3.0" },
+    { name = "textual-fspicker", specifier = ">=0.5.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -628,6 +630,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a1/d3/ed0b20f6de0af1b7062c402d59d256029c0daa055ad9e04c27471b450cdd/textual_dev-1.7.0.tar.gz", hash = "sha256:bf1a50eaaff4cd6a863535dd53f06dbbd62617c371604f66f56de3908220ccd5", size = 25935, upload-time = "2024-11-18T16:59:47.924Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/50/4b/3c1eb9cbc39f2f28d27e10ef2fe42bfe0cf3c2f8445a454c124948d6169b/textual_dev-1.7.0-py3-none-any.whl", hash = "sha256:a93a846aeb6a06edb7808504d9c301565f7f4bf2e7046d56583ed755af356c8d", size = 27221, upload-time = "2024-11-18T16:59:46.833Z" },
+]
+
+[[package]]
+name = "textual-fspicker"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "textual" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2f/6a/3ffe239e3fa38bbe8d88c8a0a5d10db503b76567f8959cd4b78fc6acb23e/textual_fspicker-0.5.0.tar.gz", hash = "sha256:a27fc1e616814e99c2dfb5be68df0ee8f7f1d53b8ed552419d542c26b45f6f75", size = 358217, upload-time = "2025-08-11T11:34:11.278Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/28/86/891e6db14fc2e6762114600e6faf0610d54d2a771891468110a390d05561/textual_fspicker-0.5.0-py3-none-any.whl", hash = "sha256:30a4b4538a2c559209438aa8c8ed1018c57ce010cebbd931dd3d70abeca66d82", size = 22359, upload-time = "2025-08-11T11:34:09.584Z" },
 ]
 
 [[package]]
