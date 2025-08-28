@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Static, RadioSet, RadioButton
+from textual.widgets import Static, RadioSet, RadioButton, Button
 from textual.message import Message
 from textual.reactive import reactive
 from textual import on
@@ -37,23 +37,36 @@ class BoardInfoPanel(Vertical):
                 for board in self.app.boards:
                     yield RadioButton(board.name)
             yield BoardDetails(id="board_details")
+        yield Button("Refresh", id="refresh_boards_button")
 
     @on(RadioSet.Changed, "#board_list")
-    def option_changed(self, event: RadioSet.Changed):
+    def post_option_changed(self, event: RadioSet.Changed):
         selected_index = [rb.value for rb in event.radio_set.children].index(True)
         board = self.app.boards[selected_index]
         details = self.query_one("#board_details", BoardDetails)
         details.show_board(board)
         
-        print(Path(__file__).parent.as_posix())
-        print(Path(__file__).parent.as_posix())
-        print((Path(__file__).parent / "BoardInfoPanel.tcss").as_posix())
 
         event.stop()
         self.post_message(BoardChanged(board))
 
+    @on(Button.Pressed, "#refresh_boards_button")
+    def post_refresh_board_list(self, event: Button.Pressed):
+        self.post_message(RefreshBoardList())
+        
+        
+    def refresh_board_list(self, boards: list[ah.BoardStruct]):
+        cur_board_list = self.query_one("#board_list", RadioSet)
+        cur_board_list.remove_children()
+        new_boards = [RadioButton(board.name) for board in self.app.boards]
+        cur_board_list.mount_all(new_boards)
+        
 
 class BoardChanged(Message):
     def __init__(self, board: ah.BoardStruct | None):
         super().__init__()
         self.board = board
+        
+class RefreshBoardList(Message):
+    def __init__(self):
+        super().__init__()

@@ -45,7 +45,7 @@ class TestApp(App):
         yield Header()
         yield Footer()
         with Vertical(id="main_container"):
-            yield bw.BoardInfoPanel()
+            yield bw.BoardInfoPanel(id="board_selection_panel")
             yield fsw.FileSelectionPanel(id="file_selection_panel")
             yield uw.UploadSketchPanel(id="upload_panel")
 
@@ -69,6 +69,13 @@ class TestApp(App):
         )
         upload_panel = self.query_one("#upload_panel", uw.UploadSketchPanel)
         upload_panel.query_one("#proceed_button").disabled = not self.uploadable
+        
+    @on(bw.RefreshBoardList)
+    def refresh_board_list(self):
+        self.boards = self.arduino.get_board_data() 
+        
+        self.query_one("#board_selection_panel", bw.BoardInfoPanel).refresh_board_list(self.boards)
+        
         
 
     def action_toggle_dark(self) -> None:

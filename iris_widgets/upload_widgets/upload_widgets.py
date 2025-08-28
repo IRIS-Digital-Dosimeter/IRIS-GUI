@@ -25,8 +25,21 @@ class UploadSketchPanel(Vertical):
         yield Button("Proceed", id="proceed_button", disabled=True)
     
     @on(Button.Pressed, "#proceed_button")
-    def upload_sketch(self, event: Button.Pressed):
+    def upload_sketch_process(self, event: Button.Pressed):
         """Handle the upload button press."""
+        if self.verify_selected_board() == False:
+            print("board failed!")
+            self.app.notify("Please select a valid board.", severity="error")
+            self.board_was_selected(None)
+            self.app.query_one("#board_selection_panel").focus()
+            return
+        if self.verify_selected_sketch() == False:
+            print("sketch failed!")
+            self.app.notify("Please select a valid sketch", severity="error")
+            self.sketch_was_selected(None)
+            self.app.query_one("#file_selection_panel").focus()
+            return
+            
         if not self.app.uploadable:
             self.app.notify("Please select a valid board and sketch before proceeding.", severity="error")
             return
@@ -46,6 +59,13 @@ class UploadSketchPanel(Vertical):
                 self.app.notify(f"Upload failed: [placeholder]", severity="error")
         else:
             self.app.notify("Invalid board or sketch selected.", severity="error")
+        
+    def verify_selected_board(self) -> bool:
+        self.app.refresh_board_list()
+        return self.app.selected_board in self.app.boards
+        
+    def verify_selected_sketch(self) -> bool:
+        return Path(self.app.selected_sketch).is_file()
         
         
     def sketch_was_selected(self, sketch: Path | None) -> None:
