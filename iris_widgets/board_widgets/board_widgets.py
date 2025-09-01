@@ -1,21 +1,34 @@
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Static, RadioSet, RadioButton, Button
+from textual.widgets import Static, RadioSet, RadioButton, Button, Label
 from textual.message import Message
 from textual.reactive import reactive
+from textual.color import Color
 from textual import on
+
 
 from pathlib import Path
 
 import arduino_helper as ah
 
 
-class BoardDetails(Static):
+class BoardDetails(Label):
     """Panel to display details of the selected board."""
 
     def show_board(self, board):
         self.update(str(board))
-
+        self.styles.background = Color(0, 0, 0, a=0)
+        
+    def reset_state(self):
+        if self.app.boards == []:
+            self.update("No boards detected...")
+            self.styles.background = "red 20%"
+        else:
+            self.update("No board selected...")
+            self.styles.background = Color(0, 0, 0, a=0)
+        
+    def on_mount(self):
+        self.reset_state()
 
 class BoardInfoPanel(Vertical):
     """Board list with a title on top, then radios + details side by side."""
@@ -38,6 +51,10 @@ class BoardInfoPanel(Vertical):
                     yield RadioButton(board.name)
             yield BoardDetails(id="board_details")
         yield Button("Refresh", id="refresh_boards_button")
+        
+        
+        
+
 
     @on(RadioSet.Changed, "#board_list")
     def post_option_changed(self, event: RadioSet.Changed):
@@ -54,12 +71,14 @@ class BoardInfoPanel(Vertical):
     def post_refresh_board_list(self, event: Button.Pressed):
         self.post_message(RefreshBoardList())
         
-        
-    def refresh_board_list(self, boards: list[ah.BoardStruct]):
+    def update_board_list(self, boards: list[ah.BoardStruct]):
         cur_board_list = self.query_one("#board_list", RadioSet)
         cur_board_list.remove_children()
         new_boards = [RadioButton(board.name) for board in self.app.boards]
         cur_board_list.mount_all(new_boards)
+        
+        self.query_one("#board_details", BoardDetails).reset_state()
+        
         
 
 class BoardChanged(Message):
