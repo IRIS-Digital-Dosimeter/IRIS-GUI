@@ -1,0 +1,9 @@
+[SerialLogger]
+owner = "IRIS-Digital-Dosimeter"
+repo = "IRIS-Project"
+remote_path = "packages/M0/Binary Serial Logger/serial_log"
+commit = ""   # commit hash at last download
+fetched_at = ""
+local_path = ""
+managed = true
+
