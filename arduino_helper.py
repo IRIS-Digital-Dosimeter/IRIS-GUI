@@ -165,13 +165,30 @@ class ExtendoArduino(Arduino):
         raw_boards = self.board.list()['result']['detected_ports']
         
         for board in raw_boards:
-            name = board["matching_boards"][0]["name"]
-            fqbn = board["matching_boards"][0]["fqbn"]
-            port = board["port"]["address"]
-            sn   = board["port"]["hardware_id"]
+            try:
+                name = board["matching_boards"][0]["name"]
+            except Exception:
+                name = "Unknown Board"
+                
+            try:
+                fqbn = board["matching_boards"][0]["fqbn"]
+            except Exception:
+                fqbn = "Unknown FQBN"
+                
+            try:
+                port = board["port"]["address"]
+            except KeyError:
+                port = "Unknown Port"
+                
+            try:
+                sn = board["port"]["hardware_id"]
+            except KeyError:
+                sn = "Unknown Serial Number"
 
             boards.append(BoardStruct(name, fqbn, port, sn))
 
+        pprint(raw_boards)
+        
         return boards
 
     # installing the arduino-cli
