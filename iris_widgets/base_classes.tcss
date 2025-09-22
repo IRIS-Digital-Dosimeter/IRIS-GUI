@@ -4,79 +4,29 @@
     text-style: bold;
     border: solid gray;
 }
+.panel {
+    padding: 1;
+    min-height: 12;
+    # height: 20;
+}
+
+
+#board_selection_panel {
+    height: 16;
+}
+#file_selection_panel {
+    height: 10;
+}
+#upload_panel {
+    height: 10;
+}
+
 
 #main_container {
     layout: vertical;
     align: center top;
     padding: 1;
-    height: auto;
+    # height: auto;
+    # height: 100;
     border: solid gray;
 }
-
-
-# # BoardInfoPanel styles
-# #board_list {
-#     width: 1fr;        /* take 30% of screen */
-#     border: solid gray;
-#     padding: 1;
-# }
-
-# #board_details {
-#     width: 2fr;
-#     border: solid gray;
-#     padding: 1;
-# }
-
-# # FileSelectionPanel styles
-# .fileselection-title {
-#     content-align: center middle;
-#     height: 3;
-#     text-style: bold;
-#     border: solid gray;
-# }
-
-# .file-label {
-#     content-align: left middle;
-#     height: 3;
-#     width: 30%;
-#     # text-style: bold;
-#     border: solid gray;
-#     margin-left: 2;
-# }
-
-# #selected-file-label {
-#     padding: 1;
-#     margin-left: 2;
-#     content-align: center middle;
-    
-# }
-
-# #browse_button {
-#     margin-left: 2;
-#     width: 20;
-#     height: 3;
-# }
-
-# # UploadSketchPanel styles
-# .status-label {
-#     width: 1fr;
-#     padding: 1;
-#     # height: 3;
-#     border: solid gray;
-# }
-
-# .status-invalid {
-#     color: red;
-#     text-style: bold;
-# }
-
-# .status-valid {
-#     color: green;
-#     text-style: bold;
-# }
-
-# #proceed_button {
-#     margin-top: 1;
-#     width: 20;
-#     height: 3;
-# }

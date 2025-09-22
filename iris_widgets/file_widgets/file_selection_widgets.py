@@ -15,12 +15,11 @@ class FileSelectionPanel(Vertical):
     
     
     def compose(self) -> ComposeResult:
-        yield Static("Sketch Selection", classes="title")
-        
-        with Vertical():
+        with Vertical(classes="panel"):
             yield Label("Select a sketch file:", classes="file-label")
-            yield Button("Browse", id="browse_button")
-            yield Label("No file selected", id="selected_file_label")
+            with Horizontal(id="browse_row"):
+                yield Button("Browse", id="browse_button")
+                yield Label("No file selected", id="selected-file-label")
     
     @on(Button.Pressed, "#browse_button")
     @work
@@ -32,7 +31,7 @@ class FileSelectionPanel(Vertical):
                 ("Arduino Sketch", lambda f: f.suffix.lower() == ".ino")
             )
         )):
-            self.query_one("#selected_file_label").update(str(opened))
+            self.query_one("#selected-file-label").update(str(opened))
 
             event.stop()
             self.post_message(SketchChanged(opened))

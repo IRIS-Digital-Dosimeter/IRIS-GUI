@@ -187,8 +187,6 @@ class ExtendoArduino(Arduino):
 
             boards.append(BoardStruct(name, fqbn, port, sn))
 
-        pprint(raw_boards)
-        
         return boards
 
     # installing the arduino-cli

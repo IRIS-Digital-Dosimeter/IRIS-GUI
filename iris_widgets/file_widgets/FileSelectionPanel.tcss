@@ -5,23 +5,24 @@
     border: solid gray;
 }
 
+#file_selection_panel * {
+    margin-left: 1;
+}
+
 .file-label {
     content-align: left middle;
     height: 3;
-    width: 30%;
-    # text-style: bold;
-    border: solid gray;
-    margin-left: 2;
+    width: 25;
 }
 
 #selected-file-label {
-    padding: 1;
-    margin-left: 2;
-    content-align: center middle;   
+    # padding: 1;
+    content-align: left middle;   
+    border: solid gray;
+    width: auto;
 }
 
 #browse_button {
-    margin-left: 2;
-    width: 20;
+    width: 5;
     height: 3;
 }

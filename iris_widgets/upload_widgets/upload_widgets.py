@@ -18,21 +18,23 @@ class UploadSketchPanel(Vertical):
     
     
     def compose(self) -> ComposeResult:
-        yield Static("Upload Sketch Panel", classes="title")
-        with Horizontal():
-            yield StatusIndicator(valid = False, text = "Board", subtext="Not Selected", id="board_status", classes="status-label status-invalid")
-            yield StatusIndicator(valid = False, text = "Sketch", subtext="Not Selected", id="sketch_status", classes="status-label status-invalid")
-        yield Button("Proceed", id="proceed_button", disabled=True)
+        with Vertical(classes="panel"):
+            with Horizontal():
+                yield StatusIndicator(valid = False, text = "Board", subtext="Not Selected", id="board_status", classes="status-label status-invalid")
+                yield StatusIndicator(valid = False, text = "Sketch", subtext="Not Selected", id="sketch_status", classes="status-label status-invalid")
+            yield Button("Proceed", id="proceed_button", disabled=True)
     
     @on(Button.Pressed, "#proceed_button")
     def upload_sketch_process(self, event: Button.Pressed):
         """Handle the upload button press."""
-        if self.verify_selected_board() == False:
-            print("board failed!")
-            self.app.notify("Please select a valid board.", severity="error")
-            self.board_was_selected(None)
-            self.app.query_one("#board_selection_panel").focus()
-            return
+        
+        if self.app.manual_board_entry == False:
+            if self.verify_selected_board() == False:
+                print("board failed!")
+                self.app.notify("Please select a valid board.", severity="error")
+                self.board_was_selected(None)
+                self.app.query_one("#board_selection_panel").focus()
+                return
         if self.verify_selected_sketch() == False:
             print("sketch failed!")
             self.app.notify("Please select a valid sketch", severity="error")
@@ -46,6 +48,8 @@ class UploadSketchPanel(Vertical):
         
         sketch = self.app.selected_sketch
         board = self.app.selected_board
+        
+        print(f"Uploading sketch {sketch} to board {board.fqbn} on port {board.port}")
         
         if sketch and board:
             try:
@@ -61,7 +65,7 @@ class UploadSketchPanel(Vertical):
             self.app.notify("Invalid board or sketch selected.", severity="error")
         
     def verify_selected_board(self) -> bool:
-        self.app.refresh_board_list()
+        self.app.screen.refresh_board_list()
         return self.app.selected_board in self.app.boards
         
     def verify_selected_sketch(self) -> bool:
@@ -69,13 +73,15 @@ class UploadSketchPanel(Vertical):
         
         
     def sketch_was_selected(self, sketch: Path | None) -> None:
+        self.app.selected_sketch = sketch
         sketch_label = self.query_one("#sketch_status", StatusIndicator)
         if sketch:
             sketch_label.set_validity(True)
             sketch_label.set_text("Sketch", sketch.name)
         else:
             sketch_label.set_validity(False)
-            sketch_label.set_text("Sketch", "Not Selected")    
+            sketch_label.set_text("Sketch", "Not Selected")
+        self.refresh()
         
     def board_was_selected(self, board: ah.BoardStruct | None) -> None:
         board_status = self.query_one("#board_status", StatusIndicator)

@@ -1,0 +1,8 @@
+#manual_board_entry_panel {
+    height: 15;
+    padding: 1;
+}
+
+#manual_board_entry_panel Button {
+    margin: 1;
+}

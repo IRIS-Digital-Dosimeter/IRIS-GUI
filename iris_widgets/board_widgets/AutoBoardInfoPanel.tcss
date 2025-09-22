@@ -1,0 +1,15 @@
+#auto_board_list {
+    max-width: 45;
+    min-width: 35;
+    width: 2fr;
+    height: 8;
+    border: solid gray;
+    padding: 1;
+}
+
+#board_details {
+    width: 3fr;
+    max-height: 10;
+    border: solid gray;
+    padding: 1;
+}
