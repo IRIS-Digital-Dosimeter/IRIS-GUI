@@ -1,17 +1,10 @@
 from textual.app import App, ComposeResult
-from textual.containers import Vertical
-from textual.widgets import Footer, Header, Static, Placeholder, OptionList, TabbedContent, TabPane, Markdown
-from textual.screen import Screen, ModalScreen
-from textual.reactive import reactive
-from textual import on, work, events
-from textual.binding import Binding
+from textual.widgets import OptionList
+from textual.screen import ModalScreen
+from textual import on, events
 from textual.widgets.option_list import Option
 
 from pathlib import Path
-
-import iris_widgets.board_widgets.board_widgets as bw
-import iris_widgets.file_widgets.file_selection_widgets as fsw
-import iris_widgets.upload_widgets.upload_widgets as uw
 
 
 class ScreenPicker(ModalScreen):

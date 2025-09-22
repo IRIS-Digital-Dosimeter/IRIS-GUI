@@ -1,22 +1,12 @@
 from textual.app import App, ComposeResult
-from textual.containers import Vertical
-from textual.widgets import Footer, Header, Static, Placeholder, OptionList, TabbedContent, TabPane, Markdown
-from textual.screen import Screen, ModalScreen
 from textual.reactive import reactive
-from textual import on, work, events
 from textual.binding import Binding
-from textual.widgets.option_list import Option
-
-import iris_widgets.board_widgets.board_widgets as bw
-import iris_widgets.file_widgets.file_selection_widgets as fsw
-import iris_widgets.upload_widgets.upload_widgets as uw
 
 from iris_screens.screen_picker import ScreenPicker
 from iris_screens.manual_upload_screen import ManualUploadScreen
 from iris_screens.intro_screen import IntroScreen
 
 
-from textual_fspicker import FileOpen, Filters
 from pathlib import Path
 from pprint import pprint
 

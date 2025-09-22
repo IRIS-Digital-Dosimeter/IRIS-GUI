@@ -1,13 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.containers import Vertical
-from textual.widgets import Footer, Header, Static, Placeholder, OptionList, TabbedContent, TabPane, Markdown
-from textual.screen import Screen, ModalScreen
-from textual.reactive import reactive
-from textual import on, work, events
-from textual.binding import Binding
-from textual.widgets.option_list import Option
-
-from pathlib import Path
+from textual.widgets import Footer, Header, Static, Markdown
+from textual.screen import Screen
 
             
 class IntroScreen(Screen):
