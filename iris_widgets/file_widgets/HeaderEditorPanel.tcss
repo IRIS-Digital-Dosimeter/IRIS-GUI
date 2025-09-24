@@ -1,0 +1,24 @@
+.config-option-label {
+    content-align: left middle;
+    border: solid gray;
+    /* padding: 1; */
+}
+
+.config-option-input {
+    /* content-align: left middle; */
+    content-align-horizontal: right;
+    min-width: 12;
+    width: auto;
+}
+
+.config-option-horizontals {
+    height: 5;
+}
+
+.separator {
+    width: 1fr;
+}
+
+HeaderEditorPanel Collapsible {
+    background-tint: gray 5%;
+}

@@ -1,7 +1,7 @@
-[SerialLogger]
+[M4]
 owner = "IRIS-Digital-Dosimeter"
 repo = "IRIS-Project"
-remote_path = "packages/M0/Binary Serial Logger/serial_log"
+remote_path = "packages/M4/M4 Datalogger/dma_dual_adc_unified_SdFat/dma_dual_adc_unified_SdFat.ino"
 commit = ""   # commit hash at last download
 fetched_at = ""
 local_path = ""

@@ -5,16 +5,13 @@ from textual.binding import Binding
 from iris_screens.screen_picker import ScreenPicker
 from iris_screens.manual_upload_screen import ManualUploadScreen
 from iris_screens.intro_screen import IntroScreen
+from iris_screens.mda_screen import MDAScreen
 
 
 from pathlib import Path
 from pprint import pprint
 
 import arduino_helper as ah
-
-
-
-
             
     
 class IrisApp(App):
@@ -31,6 +28,7 @@ class IrisApp(App):
     SCREENS = {
         "man_screen": ManualUploadScreen,
         "intro_screen": IntroScreen,
+        # "mda_screen": MDAScreen,
     }
     
     selected_sketch: reactive[str | None] = reactive(None)

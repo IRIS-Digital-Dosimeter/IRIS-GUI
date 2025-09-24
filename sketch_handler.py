@@ -18,6 +18,9 @@ def get_sketch(name, version="latest", owner="IRIS-Digital-Dosimeter", repo="IRI
         raise Exception("Malformed TOML lockfile")
 
     sketch_info = lock.get(name)
+    if not sketch_info:
+        raise SketchHandlerException("Sketch not in lock file.")
+
     print("sketch info below: ")
     pprint(sketch_info)
     print()
@@ -25,12 +28,17 @@ def get_sketch(name, version="latest", owner="IRIS-Digital-Dosimeter", repo="IRI
     if version == "latest":
         if not online():
             raise RuntimeError("Cannot fetch 'latest' while offline.")
-        commit = get_latest_commit(sketch_info["remote_path"], owner, repo, branch)
+        
+        commit = get_latest_commit(sketch_info["remote_path"], owner, repo, branch)[0]
+
+        # pprint(commit)
+        return commit['commit']['tree']['sha'][0]
+
     else:
+        raise NotImplementedError()
         commit = version  # explicit commit hash
 
     
-    return commit
 
     # # Not in lockfile → fetch
     # if not sketch_info or sketch_info["commit"] != commit:
@@ -82,6 +90,10 @@ def get_latest_commit(remote_path: str, owner: str, repo: str, branch: str = Non
         return None
 
 
+class SketchHandlerException(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
 if __name__ == "__main__":
     
     print('running main')
@@ -95,12 +107,14 @@ if __name__ == "__main__":
     # load_lockfile(LOCKFILE_PATH)
     print(f"github reachable? {online()}")
     print()
-    commits = get_sketch("SerialLogger", branch="cleanup")
+    commits = get_sketch("M4", branch="cleanup")
     print(len(commits))
     print()
-    print()
+    print(commits)
     
-    for commit in commits:
+    # for commit in commits:
         # pprint(commit['commit'])
-        print(commit['commit']['message'])
-        print(commit['commit']['tree']['sha'])
+        # print('----')
+        # print(commit['commit']['message'])
+        # print()
+        # print(commit['commit']['tree']['sha'])

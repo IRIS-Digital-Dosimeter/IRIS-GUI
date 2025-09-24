@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static, TabbedContent, TabPane, RadioSet
+from textual.widgets import Footer, Header, Static, TabbedContent, TabPane
 from textual.screen import Screen
 from textual import on, work
 
@@ -7,15 +7,13 @@ from pathlib import Path
 
 import iris_widgets.board_widgets.board_widgets as bw
 import iris_widgets.file_widgets.file_selection_widgets as fsw
-import iris_widgets.file_widgets.header_editor_widgets as cfg
 import iris_widgets.upload_widgets.upload_widgets as uw
 
-class ManualUploadScreen(Screen):
+class MDAScreen(Screen):
     CSS_PATH = [
         Path(__file__).parent.parent / "iris_widgets" / "board_widgets" / "AutoBoardInfoPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "board_widgets" / "ManualBoardEntryPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "file_widgets" / "FileSelectionPanel.tcss",
-        Path(__file__).parent.parent / "iris_widgets" / "file_widgets" / "HeaderEditorPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "upload_widgets" / "UploadSketchPanel.tcss",
     ]
     
@@ -38,11 +36,7 @@ class ManualUploadScreen(Screen):
                 yield bw.ManualBoardEntryPanel(id="manual_board_entry_panel")
         
         yield Static("Sketch Selection", classes="title")
-        with TabbedContent(classes="panel"):
-            with TabPane("Manual Sketch Path"):
-                yield fsw.FileSelectionPanel(id="file_selection_panel")
-            with TabPane("Sketch Config", id="sketch_config_tab", disabled=True):
-                yield cfg.HeaderEditorPanel(id="header_editor_panel")
+        yield fsw.FileSelectionPanel(id="file_selection_panel")
 
         yield Static("Upload Sketch Panel", classes="title")
         yield uw.UploadSketchPanel(id="upload_panel")
@@ -59,8 +53,6 @@ class ManualUploadScreen(Screen):
     def on_sketch_changed(self, event: fsw.SketchChanged) -> None:
         self.selected_sketch = event.sketch
         self.query_one("#upload_panel", uw.UploadSketchPanel).sketch_was_selected(event.sketch)
-        self.query_one("#sketch_config_tab", TabPane).disabled = False
-        self.query_one("#header_editor_panel", cfg.HeaderEditorPanel).activate(event.sketch)
 
 
     @on(bw.BoardChanged)
@@ -85,9 +77,8 @@ class ManualUploadScreen(Screen):
     @on(bw.RefreshAutoBoardList)
     @work(exclusive=True)
     async def refresh_board_list(self):
-        bsp = self.query_one("#board_selection_panel", bw.AutoBoardInfoPanel)
         self.app.boards = self.app.arduino.get_board_data() 
-        bsp.update_board_list(self.app.boards)
+        self.query_one("#board_selection_panel", bw.AutoBoardInfoPanel).update_board_list(self.app.boards)
         
 
     def action_toggle_dark(self) -> None:
