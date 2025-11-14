@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static, TabbedContent, TabPane
+from textual.widgets import Footer, Header, Static, TabbedContent, TabPane, RadioSet
 from textual.screen import Screen
 from textual import on, work
 
@@ -14,19 +14,20 @@ class MDAScreen(Screen):
         Path(__file__).parent.parent / "iris_widgets" / "board_widgets" / "AutoBoardInfoPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "board_widgets" / "ManualBoardEntryPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "file_widgets" / "FileSelectionPanel.tcss",
+        Path(__file__).parent.parent / "iris_widgets" / "file_widgets" / "PresetFileSelectionPanel.tcss",
         Path(__file__).parent.parent / "iris_widgets" / "upload_widgets" / "UploadSketchPanel.tcss",
+        # Path(__file__).parent.parent / "iris_widgets" / "mda_widgets" / "UploadSketchPanel.tcss",
     ]
     
-    BINDINGS = [
-        ("f", "pick_file", "Pick File"),
-    ]
+    # BINDINGS = [
+    #     ("f", "pick_file", "Pick File"),
+    # ]
     
     
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        # with Vertical(id="main_container"):
-        # yield bw.AutoBoardInfoPanel(id="board_selection_panel", classes="panel")
+
         yield Static(f"Board Selection", classes="title")
         with TabbedContent(classes="panel"):
             with TabPane("Detected Boards"):
@@ -36,7 +37,7 @@ class MDAScreen(Screen):
                 yield bw.ManualBoardEntryPanel(id="manual_board_entry_panel")
         
         yield Static("Sketch Selection", classes="title")
-        yield fsw.FileSelectionPanel(id="file_selection_panel")
+        yield fsw.PresetFileSelectionPanel(id="preset_file_selection_panel")
 
         yield Static("Upload Sketch Panel", classes="title")
         yield uw.UploadSketchPanel(id="upload_panel")
@@ -77,8 +78,9 @@ class MDAScreen(Screen):
     @on(bw.RefreshAutoBoardList)
     @work(exclusive=True)
     async def refresh_board_list(self):
+        bsp = self.query_one("#board_selection_panel", bw.AutoBoardInfoPanel)
         self.app.boards = self.app.arduino.get_board_data() 
-        self.query_one("#board_selection_panel", bw.AutoBoardInfoPanel).update_board_list(self.app.boards)
+        bsp.update_board_list(self.app.boards)
         
 
     def action_toggle_dark(self) -> None:

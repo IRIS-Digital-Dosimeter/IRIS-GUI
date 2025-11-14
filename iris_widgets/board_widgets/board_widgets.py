@@ -38,8 +38,6 @@ class AutoBoardInfoPanel(Vertical):
         Path(__file__).parent.parent / "base_classes.tcss"
     ]
 
-    selected_board: reactive[ah.BoardStruct | None] = reactive(None)
-    
     def compose(self) -> ComposeResult:
         with Vertical(classes="panel"):
             with Horizontal():

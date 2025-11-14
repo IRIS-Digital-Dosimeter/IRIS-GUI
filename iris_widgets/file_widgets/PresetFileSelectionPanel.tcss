@@ -1,0 +1,16 @@
+#preset_sketch_list {
+    max-width: 45;
+    min-width: 35;
+    width: 2fr;
+    height: 8;
+    border: solid gray;
+    padding: 1;
+}
+
+#sketch_details {
+    width: 3fr;
+    max-height: 10;
+    height: 8;
+    border: solid gray;
+    padding: 1;
+}

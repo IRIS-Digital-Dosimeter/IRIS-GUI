@@ -28,17 +28,19 @@ class IrisApp(App):
     SCREENS = {
         "man_screen": ManualUploadScreen,
         "intro_screen": IntroScreen,
-        # "mda_screen": MDAScreen,
+        "mda_screen": MDAScreen,
     }
     
     selected_sketch: reactive[str | None] = reactive(None)
     selected_board: reactive[ah.BoardStruct | None] = reactive(None)
     boards: reactive[list[ah.BoardStruct]] = reactive([])
 
-    def __init__(self, arduino: ah.ExtendoArduino):
+    def __init__(self, arduino: ah.ExtendoArduino, preset_sketches: dict[str, Path]):
         super().__init__()
         self.arduino = arduino
         self.boards = arduino.get_board_data()
+        self.preset_sketches = preset_sketches
+        
         self.uploadable = False
         self.manual_board_entry = False
         
@@ -58,6 +60,22 @@ if __name__ == "__main__":
             'https://adafruit.github.io/arduino-board-index/package_adafruit_index.json'
         ],
     )
+    
+    preset_sketch_folder = Path(__file__).parent / "preset_sketches"
+    preset_sketches = {
+        "Binary Serial Logger": preset_sketch_folder / "Binary Serial Logger" / "serial_log" / "serial_log.ino",
+        "M4 Datalogger": preset_sketch_folder / "M4 Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino",
+        "SD Card Exposer": preset_sketch_folder / "SD Card Exposer" / "msc_sdfat" / "msc_sdfat.ino",
+        "Toggle Switch Datalogger": preset_sketch_folder / "Toggle Switch Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino",
+    }
+    files_exist = all(sketch.exists() for sketch in preset_sketches.values())
+    if files_exist:
+        print("All preset sketches exist!")
+    else:
+        print("Check preset sketches...")
+        exit()
+    
+    
 
-    app = IrisApp(arduino=arduino)
+    app = IrisApp(arduino=arduino, preset_sketches=preset_sketches)
     app.run()
