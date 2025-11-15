@@ -17,6 +17,9 @@
 #file_selection_panel {
     height: 10;
 }
+#preset_file_selection_panel {
+    height: 10;
+}
 #upload_panel {
     height: 11;
 }
