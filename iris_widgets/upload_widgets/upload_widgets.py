@@ -56,7 +56,7 @@ class UploadSketchPanel(Vertical):
                 result = self.app.arduino.compile_upload_verify(
                     port=board.port,
                     fqbn=board.fqbn,
-                    sketch_path=sketch.as_posix()
+                    sketch=sketch
                 )
                 self.app.notify(f"Upload successful: [placeholder]", severity="success")
             except Exception as e:
@@ -69,15 +69,15 @@ class UploadSketchPanel(Vertical):
         return self.app.selected_board in self.app.boards
         
     def verify_selected_sketch(self) -> bool:
-        return Path(self.app.selected_sketch).is_file()
+        return self.app.selected_sketch.path.is_file()
         
         
-    def sketch_was_selected(self, sketch: Path | None) -> None:
+    def sketch_was_selected(self, sketch: ah.SketchStruct | None) -> None:
         self.app.selected_sketch = sketch
         sketch_label = self.query_one("#sketch_status", StatusIndicator)
         if sketch:
             sketch_label.set_validity(True)
-            sketch_label.set_text("Sketch", sketch.name)
+            sketch_label.set_text("Sketch", sketch.path.name)
         else:
             sketch_label.set_validity(False)
             sketch_label.set_text("Sketch", "Not Selected")

@@ -1,10 +1,11 @@
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Footer, Header, Static, RadioSet, RadioButton, Button, Label
+from textual.widgets import Footer, Header, Static, RadioSet, RadioButton, Button, Label, OptionList
 from textual.message import Message
 from textual.reactive import reactive
 from textual import on, work
 from textual.color import Color
+import arduino_helper as ah
 
 from textual_fspicker import FileOpen, Filters
 
@@ -22,6 +23,11 @@ class FileSelectionPanel(Vertical):
             with Horizontal(id="browse_row"):
                 yield Button("Browse", id="browse_button")
                 yield Label("No file selected", id="selected-file-label")
+
+    def get_selected_usb_stack(self) -> ah.USBStack:
+        highlighted_usbstack_index = self.app.screen.query_one("#usb_stack_option_list").highlighted
+        highlighted_usbstack = ah.USBStack.list()[highlighted_usbstack_index]
+        return highlighted_usbstack
     
     @on(Button.Pressed, "#browse_button")
     @work
@@ -36,7 +42,17 @@ class FileSelectionPanel(Vertical):
             self.query_one("#selected-file-label").update(str(opened))
 
             event.stop()
-            self.post_message(SketchChanged(opened))
+            cur_usbstack = self.get_selected_usb_stack()
+            new_sketch_struct = ah.SketchStruct(opened, cur_usbstack)
+            self.post_message(SketchChanged(new_sketch_struct))
+            
+    @on(OptionList.OptionSelected)
+    def action_select_usbstack(self, event:OptionList.OptionSelected) -> None:
+        highlighted_usbstack = self.get_selected_usb_stack()
+        if self.app.selected_sketch:
+            cur_sketch_path = self.app.selected_sketch.path
+            new_sketch_struct = ah.SketchStruct(cur_sketch_path, highlighted_usbstack)
+            self.post_message(SketchChanged(new_sketch_struct))
             
             
             
@@ -54,12 +70,11 @@ class PresetFileSelectionPanel(Vertical):
 
     @on(RadioSet.Changed, "#preset_sketch_list")
     def post_sketch_changed(self, event: RadioSet.Changed):
-        
         event.stop()
+        
         selected_index = [rb.value for rb in event.radio_set.children].index(True)
-        selected_sketch_path = list(self.app.preset_sketches.values())[selected_index]
-        print(f"PRESET SKETCH: {selected_sketch_path}")
-        self.post_message(SketchChanged(selected_sketch_path))
+        selected_sketch = list(self.app.preset_sketches.values())[selected_index]
+        self.post_message(SketchChanged(selected_sketch))
                         
 class SelectedSketchDetails(Label):
     """Panel to display details of the selected sketch."""
@@ -78,6 +93,6 @@ class SelectedSketchDetails(Label):
             
         
 class SketchChanged(Message):
-    def __init__(self, sketch: Path | None):
+    def __init__(self, sketch: ah.SketchStruct | None):
         super().__init__()
         self.sketch = sketch

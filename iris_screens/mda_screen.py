@@ -64,7 +64,7 @@ class MDAScreen(Screen):
         self.app.uploadable = (
             self.app.selected_board is not None and
             self.app.selected_sketch is not None and
-            self.app.selected_sketch.exists()
+            self.app.selected_sketch.path.exists()
         )
         # print(f"Uploadable: {self.app.uploadable}")
         # print(f"Selected Board: {self.app.selected_board}")

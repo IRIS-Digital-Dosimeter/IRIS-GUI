@@ -5,18 +5,16 @@ from textual.message import Message
 from textual.reactive import reactive
 from textual import on, work
 from textual_fspicker import FileOpen, Filters
-
-import iris_widgets.file_widgets.file_selection_widgets as fsw
-
 from pathlib import Path
 
+import iris_widgets.file_widgets.file_selection_widgets as fsw
 import config_h_editor as che
-
+import arduino_helper as ah
 
 class HeaderEditorPanel(VerticalScroll):
     """Panel for editing a header file using the IRIS-Project's ."""
     
-    config_handler: reactive[che.SketchConfigHandler | None] = None
+    config_handler: reactive[che.SketchConfigHandler | None] = reactive(None)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,8 +29,9 @@ class HeaderEditorPanel(VerticalScroll):
     #     with VerticalScroll(classes="panel"):
     #         yield Placeholder()
             
-    def activate(self, sketch_path: Path):
-        header_path = sketch_path.parent / "config.h"
+    def activate(self, sketch: ah.SketchStruct):
+        
+        header_path = sketch.path.parent / "config.h"
         self.config_handler = che.SketchConfigHandler(header_path)
         
         d = self.config_handler.retrieve()

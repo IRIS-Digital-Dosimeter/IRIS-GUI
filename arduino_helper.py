@@ -1,5 +1,7 @@
 from pyduinocli.commands.arduino import ArduinoCliCommand as Arduino
 from pprint import pprint
+from dataclasses import dataclass
+from enum import StrEnum
 from zipfile import ZipFile
 from pathlib import Path
 from zipfile import ZipFile
@@ -49,6 +51,19 @@ class BoardStruct:
             f"Port: {self.port}\n"
             f"Serial Number: {self.serial_number}"
         )
+
+class USBStack(StrEnum):
+    ARDUINO_STACK = 'arduino'
+    TINYUSB_STACK = 'tinyusb'
+
+    @classmethod
+    def list(cls):
+        return list(map(lambda e: e.value, cls))
+
+@dataclass
+class SketchStruct:
+    path: Path
+    usb_stack: USBStack
 
 class ExtendoArduino(Arduino):   
     __FORMAT_JSON = 'json'
@@ -145,14 +160,14 @@ class ExtendoArduino(Arduino):
         return self.lib.install(libs)
 
     # compile, upload, and verify the sketch at the given path (path should be the .ino file)
-    def compile_upload_verify(self, port: str, fqbn: str, sketch_path: str, usbstack='arduino'):
-        if not os.path.exists(sketch_path):
-            raise FileNotFoundError(f"Sketch '{sketch_path}'doesn't exist!")
+    def compile_upload_verify(self, port: str, fqbn: str, sketch: SketchStruct):
+        if not sketch.path.exists():
+            raise FileNotFoundError(f"Sketch '{sketch.path}'doesn't exist!")
         
         return self.compile(
-            sketch=sketch_path, 
+            sketch=sketch.path.as_posix(), 
             port=port, 
-            fqbn=f"{fqbn}:usbstack={usbstack}",
+            fqbn=f"{fqbn}:usbstack={sketch.usb_stack}",
             verify=True,
             upload=True,
             clean=True
@@ -215,7 +230,7 @@ class ExtendoArduino(Arduino):
             
             # remove the zip file and license
             os.remove(os.path.join(path, "arduino-cli.zip"))
-            os.remove(os.path.join(path, "LICENSE.txt"))
+            # os.remove(os.path.join(path, "LICENSE.txt"))
             return os.path.join(path, 'arduino-cli.exe')
             
         elif os.name == 'posix':
@@ -239,4 +254,16 @@ class ExtendoArduino(Arduino):
     
     
     
-    
+# arduino = ExtendoArduino(
+#     additional_urls=[
+#         'https://adafruit.github.io/arduino-board-index/package_adafruit_index.json'
+#     ],
+# )
+
+
+# preset_sketch_folder = Path(__file__).parent / "preset_sketches"
+# p = SketchStruct(preset_sketch_folder / "SD Card Exposer" / "msc_sdfat" / "msc_sdfat.ino", USBStack.TINYUSB_STACK)
+# fqbn = 'adafruit:samd:adafruit_feather_m4'
+# print(arduino.board.list())
+# print(p.usb_stack)
+# arduino.compile_upload_verify('COM5', fqbn, p)

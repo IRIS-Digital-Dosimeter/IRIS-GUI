@@ -31,11 +31,11 @@ class IrisApp(App):
         "mda_screen": MDAScreen,
     }
     
-    selected_sketch: reactive[str | None] = reactive(None)
+    selected_sketch: reactive[ah.SketchStruct | None] = reactive(None)
     selected_board: reactive[ah.BoardStruct | None] = reactive(None)
     boards: reactive[list[ah.BoardStruct]] = reactive([])
 
-    def __init__(self, arduino: ah.ExtendoArduino, preset_sketches: dict[str, Path]):
+    def __init__(self, arduino: ah.ExtendoArduino, preset_sketches: dict[str, ah.SketchStruct]):
         super().__init__()
         self.arduino = arduino
         self.boards = arduino.get_board_data()
@@ -63,12 +63,12 @@ if __name__ == "__main__":
     
     preset_sketch_folder = Path(__file__).parent / "preset_sketches"
     preset_sketches = {
-        "Binary Serial Logger": preset_sketch_folder / "Binary Serial Logger" / "serial_log" / "serial_log.ino",
-        "M4 Datalogger": preset_sketch_folder / "M4 Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino",
-        "SD Card Exposer": preset_sketch_folder / "SD Card Exposer" / "msc_sdfat" / "msc_sdfat.ino",
-        "Toggle Switch Datalogger": preset_sketch_folder / "Toggle Switch Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino",
+        "Binary Serial Logger": ah.SketchStruct(preset_sketch_folder / "Binary Serial Logger" / "serial_log" / "serial_log.ino", ah.USBStack.ARDUINO_STACK),
+        "M4 Datalogger": ah.SketchStruct(preset_sketch_folder / "M4 Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino", ah.USBStack.ARDUINO_STACK),
+        "SD Card Exposer": ah.SketchStruct(preset_sketch_folder / "SD Card Exposer" / "msc_sdfat" / "msc_sdfat.ino", ah.USBStack.TINYUSB_STACK),
+        "Toggle Switch Datalogger": ah.SketchStruct(preset_sketch_folder / "Toggle Switch Datalogger" / "dma_dual_adc_unified_SdFat" / "dma_dual_adc_unified_SdFat.ino", ah.USBStack.ARDUINO_STACK),
     }
-    files_exist = all(sketch.exists() for sketch in preset_sketches.values())
+    files_exist = all(sketch.path.exists() for sketch in preset_sketches.values())
     if files_exist:
         print("All preset sketches exist!")
     else:

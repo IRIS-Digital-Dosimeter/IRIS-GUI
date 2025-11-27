@@ -9,6 +9,17 @@
     margin-left: 1;
 }
 
+#usb_stack_option_list {
+    min-height: 5;
+    height: 7;
+    width: 30%;
+}
+
+#manual_sketch_path_tab_hor {
+    min-height: 10;
+    height: 10;
+}
+
 .file-label {
     content-align: left middle;
     height: 3;

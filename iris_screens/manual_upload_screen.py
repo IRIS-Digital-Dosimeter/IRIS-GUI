@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static, TabbedContent, TabPane, RadioSet
+from textual.containers import Horizontal, Vertical
+from textual.widgets import Footer, Header, Static, TabbedContent, TabPane, OptionList
 from textual.screen import Screen
 from textual import on, work
 
@@ -9,6 +10,8 @@ import iris_widgets.board_widgets.board_widgets as bw
 import iris_widgets.file_widgets.file_selection_widgets as fsw
 import iris_widgets.file_widgets.header_editor_widgets as cfg
 import iris_widgets.upload_widgets.upload_widgets as uw
+
+import arduino_helper as ah
 
 class ManualUploadScreen(Screen):
     CSS_PATH = [
@@ -40,7 +43,9 @@ class ManualUploadScreen(Screen):
         yield Static("Sketch Selection", classes="title")
         with TabbedContent(classes="panel"):
             with TabPane("Manual Sketch Path"):
-                yield fsw.FileSelectionPanel(id="file_selection_panel")
+                with Horizontal(id="manual_sketch_path_tab_hor"):
+                    yield fsw.FileSelectionPanel(id="file_selection_panel")
+                    yield OptionList(*(ah.USBStack.list()), id="usb_stack_option_list")
             with TabPane("Sketch Config", id="sketch_config_tab", disabled=True):
                 yield cfg.HeaderEditorPanel(id="header_editor_panel")
 
@@ -57,10 +62,11 @@ class ManualUploadScreen(Screen):
 
     @on(fsw.SketchChanged)
     def on_sketch_changed(self, event: fsw.SketchChanged) -> None:
-        self.selected_sketch = event.sketch
-        self.query_one("#upload_panel", uw.UploadSketchPanel).sketch_was_selected(event.sketch)
-        self.query_one("#sketch_config_tab", TabPane).disabled = False
-        self.query_one("#header_editor_panel", cfg.HeaderEditorPanel).activate(event.sketch)
+        if event.sketch:
+            self.app.selected_sketch = event.sketch
+            self.query_one("#upload_panel", uw.UploadSketchPanel).sketch_was_selected(event.sketch)
+            self.query_one("#sketch_config_tab", TabPane).disabled = False
+            self.query_one("#header_editor_panel", cfg.HeaderEditorPanel).activate(event.sketch)
 
 
     @on(bw.BoardChanged)
@@ -71,7 +77,7 @@ class ManualUploadScreen(Screen):
         self.app.uploadable = (
             self.app.selected_board is not None and
             self.app.selected_sketch is not None and
-            self.app.selected_sketch.exists()
+            self.app.selected_sketch.path.exists()
         )
         # print(f"Uploadable: {self.app.uploadable}")
         # print(f"Selected Board: {self.app.selected_board}")

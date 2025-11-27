@@ -1,0 +1,3 @@
+["SD CONFIGURATION"]
+SD_CS_PIN = "10" # // Chip Select pin for SD
+SPI_CLOCK_MHZ = "50" # // SPI clock speed in MHz
